@@ -60,7 +60,7 @@ class DirectionDiagnostics:
             self.streak = self.valid_streak = 0
         self.context = context
         self.last_time = now
-        if profile not in ('coded-16-18', 'coded-20') and not profile.startswith('imported-'):
+        if profile not in ('coded-16-18', 'coded-20', 'coded-gap') and not profile.startswith('imported-'):
             return
         block = {'audio': np.asarray(audio, dtype='<i2').copy(), 'health': dict(health),
                  'estimate': dict(estimate), 'generation': generation,

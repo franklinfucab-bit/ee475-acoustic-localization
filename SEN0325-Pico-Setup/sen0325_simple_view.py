@@ -19,7 +19,7 @@ from signal_scope import SignalScope
 
 
 class SimpleView:
-    def __init__(self,Session,root,channels,auto_close=None,initial_profile='coded-20'):
+    def __init__(self,Session,root,channels,auto_close=None,initial_profile='coded-gap'):
         self.root=root
         self.channels=channels
         self.auto_close=auto_close
@@ -101,7 +101,7 @@ class SimpleView:
         spec=ALL_PROFILES[initial_profile];self.scope.target_band=(spec['low'],spec['high'])
         self.probe_frequencies=tuple(round(spec['low']+(spec['high']-spec['low'])*i/4) for i in range(5))
         self.last_signal=0
-        self.help=tk.StringVar(value='Beacon menu: 20 kHz plays 01_LOCATE_20kHz_19-21kHz. Gap test plays 01_LOCATE_18-22kHz_43ms-gap. Use the matching file, then Start Scan.')
+        self.help=tk.StringVar(value='Opens on Gap test. Play 01_LOCATE_18-22kHz_43ms-gap. The 20 kHz menu plays 01_LOCATE_20kHz_19-21kHz. Use the matching file, then Start Scan.')
         ttk.Label(self.pane,textvariable=self.help,wraplength=1020,foreground='#7ed7cc').pack(anchor='w',pady=(8,3))
         ttk.Label(self.pane,text='Bearing only: rings do not show distance. High-frequency localization is experimental.',foreground='#789aa5',font=('Segoe UI',9)).pack(anchor='w')
         self.build_advanced()
@@ -450,7 +450,7 @@ class SimpleView:
         self.window.destroy()
 
 
-def run(Session,root,channels,auto_close=None,initial_profile='coded-20'):
+def run(Session,root,channels,auto_close=None,initial_profile='coded-gap'):
     kernel=ctypes.windll.kernel32
     kernel.CreateMutexW.argtypes=(ctypes.c_void_p,ctypes.c_bool,ctypes.c_wchar_p)
     kernel.CreateMutexW.restype=ctypes.c_void_p

@@ -6,7 +6,7 @@ PROFILES={'20 kHz beacon | 19-21 kHz':'coded-20',
 class ScanControls:
     def __init__(self,session):
         self.session=session
-        self.profile='coded-20'
+        self.profile='coded-gap'
         self.session.set_running(False)
         self.session.set_mode(self.profile)
 

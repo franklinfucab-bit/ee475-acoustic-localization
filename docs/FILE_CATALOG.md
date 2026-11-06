@@ -14,7 +14,6 @@
 | `SEN0325-Pico-Setup/Load-RAM.ps1` | Active Pico + desktop receiver | Owner-layout picotool RAM loading helper |
 | `SEN0325-Pico-Setup/Monitor.ps1` | Active Pico + desktop receiver | Owner-layout serial monitor helper |
 | `SEN0325-Pico-Setup/README.md` | Active Pico + desktop receiver | Main project overview / entry point |
-| `SEN0325-Pico-Setup/Start-Test.cmd` | Active Pico + desktop receiver | Workspace shortcut to the root receiver launcher |
 | `SEN0325-Pico-Setup/app_controls.py` | Active Pico + desktop receiver | Scan/profile state and cancellation rules |
 | `SEN0325-Pico-Setup/app_instance.py` | Active Pico + desktop receiver | Instance nonce and graceful restart coordination |
 | `SEN0325-Pico-Setup/array_geometry.json` | Active Pico + desktop receiver | Array channel geometry and display heading/mirror configuration |
@@ -58,8 +57,6 @@
 | `esp32-link/esp32_doa/phase_doa.h` | Optional Pico–ESP32 UART | 300–2000 Hz phase estimator ported from direction_estimator.py |
 | `SHA256SUMS.txt` | Project documentation / entry | SHA-256 integrity list for published files except itself |
 | `Setup-Windows.ps1` | Project documentation / entry | Create project-local Python environment and validate dependencies |
-| `Start-20kHz.cmd` | Project documentation / entry | Compatibility shortcut to current receiver launcher |
-| `Start-Localizer.cmd` | Project documentation / entry | Compatibility shortcut to current receiver launcher |
 | `Update-and-Start.cmd` | Project documentation / entry | Select configured Python and invoke graceful local refresh/start |
 | `android-player/Build.cmd` | Android transmitter | Utility/source: Build |
 | `android-player/Build.ps1` | Android transmitter | Android SDK/JDK build and development signing |

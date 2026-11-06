@@ -42,7 +42,7 @@ def main(check_only=False):
         while running(old['pid']) and time.monotonic()<deadline:time.sleep(.2)
         if running(old['pid']):raise RuntimeError('The current recording is still closing. Wait for it to save, then retry. No process was forcibly stopped.')
     pythonw=Path(sys.executable).with_name('pythonw.exe')
-    subprocess.Popen([str(pythonw),str(ROOT/'sen0325_launcher.py'),'--profile','coded-20'],cwd=ROOT,creationflags=NO_WINDOW)
+    subprocess.Popen([str(pythonw),str(ROOT/'sen0325_launcher.py'),'--profile','coded-gap'],cwd=ROOT,creationflags=NO_WINDOW)
     deadline=time.monotonic()+15;info={}
     while time.monotonic()<deadline:
         try:info=json.loads(info_path.read_text(encoding='utf-8'))

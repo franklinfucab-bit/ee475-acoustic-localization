@@ -1,6 +1,6 @@
 EE475 GAP TEST — 18–22 kHz BURST, 43 ms SILENCE (2026-11-03)
 
-This file is not the default beacon. Update-and-Start still uses coded-20.
+Update-and-Start opens the PC menu on this gap test. Play this file unless the menu is changed to 20 kHz.
 
 01_LOCATE_18-22kHz_43ms-gap.wav
 01_LOCATE_18-22kHz_43ms-gap.mp3

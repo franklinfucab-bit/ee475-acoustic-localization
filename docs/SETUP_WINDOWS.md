@@ -13,7 +13,7 @@ This command creates .venv inside the project and installs SEN0325-Pico-Setup/re
 Update-and-Start.cmd chooses EE475_PYTHON when supplied, then .venv/Scripts/pythonw.exe, then the owner's existing C:/Tools/Embedded runtime. Set the variable to a full configured Python executable if needed. For a console with useful errors:
 
 ```powershell
-.\.venv\Scripts\python.exe .\SEN0325-Pico-Setup\sen0325_launcher.py --profile coded-20
+.\.venv\Scripts\python.exe .\SEN0325-Pico-Setup\sen0325_launcher.py --profile coded-gap
 ```
 
 The launcher is a local source refresh/restart. It does not pull GitHub changes. Use git pull separately after reviewing local modifications.

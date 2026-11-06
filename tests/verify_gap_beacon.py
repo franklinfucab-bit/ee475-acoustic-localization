@@ -35,7 +35,7 @@ occupied=float(power[(band>=18000)&(band<=22000)].sum()/max(power.sum(),1e-18))
 check('energy_in_18_22k',occupied>0.9,round(occupied,6))
 check('launch_menu_keeps_coded20_first',tuple(MENU.values())[0]=='coded-20' and 'coded-gap' in MENU.values(),tuple(MENU))
 launcher=(ROOT/'refresh_and_start.py').read_text(encoding='utf-8')
-check('one_click_still_starts_coded20',"'--profile','coded-20'" in launcher,True)
+check('one_click_starts_gap_test',"'--profile','coded-gap'" in launcher,True)
 routed,_=BeaconEstimator(ROOT/'array_geometry.json','coded-gap').estimate(
     np.zeros((SIZE,7),dtype='<i2'),{},0)
 check('gap_uses_highband_delay',routed.get('method')=='coded_matched_filter_highband_delay',routed.get('method'))

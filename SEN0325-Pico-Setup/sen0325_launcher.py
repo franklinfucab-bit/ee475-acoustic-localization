@@ -557,7 +557,7 @@ if __name__ == "__main__":
     parser.add_argument("--smoke-test", type=float, metavar="SECONDS")
     parser.add_argument("--reload-ram", action="store_true")
     parser.add_argument("--ui-smoke-test", type=float, metavar="SECONDS")
-    parser.add_argument('--profile',choices=('coded-audible','coded-16-18','coded-20'),default='coded-20')
+    parser.add_argument('--profile',choices=('coded-audible','coded-16-18','coded-20','coded-gap'),default='coded-gap')
     args = parser.parse_args()
     try:
         raise SystemExit(smoke_test(args.smoke_test, args.reload_ram) if args.smoke_test else gui(args.ui_smoke_test,args.profile))
