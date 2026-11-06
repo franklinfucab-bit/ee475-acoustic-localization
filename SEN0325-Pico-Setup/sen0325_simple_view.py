@@ -101,7 +101,7 @@ class SimpleView:
         spec=ALL_PROFILES[initial_profile];self.scope.target_band=(spec['low'],spec['high'])
         self.probe_frequencies=tuple(round(spec['low']+(spec['high']-spec['low'])*i/4) for i in range(5))
         self.last_signal=0
-        self.help=tk.StringVar(value='Loop 01_LOCATE_20kHz_19-21kHz.mp3 on your phone, then select Start Scan.')
+        self.help=tk.StringVar(value='Beacon menu: 20 kHz plays 01_LOCATE_20kHz_19-21kHz. Gap test plays 01_LOCATE_18-22kHz_43ms-gap. Use the matching file, then Start Scan.')
         ttk.Label(self.pane,textvariable=self.help,wraplength=1020,foreground='#7ed7cc').pack(anchor='w',pady=(8,3))
         ttk.Label(self.pane,text='Bearing only: rings do not show distance. High-frequency localization is experimental.',foreground='#789aa5',font=('Segoe UI',9)).pack(anchor='w')
         self.build_advanced()
@@ -130,7 +130,7 @@ class SimpleView:
         self.finish_range(cancelled=True)
         self.controls.toggle_scan()
         self.detection_intervals.clear();self.last_detection_time=None
-        self.direction.update({'valid':False},time.monotonic())
+        self.direction.update({'valid':False,'drop':True},time.monotonic())
         self.sync_switches()
         self.help.set('Scanning. Play the matching LOCATE file on your phone. TONE files update levels only.' if self.controls.running else 'Scan stopped. Start and stop playback on your phone.')
 
@@ -140,16 +140,19 @@ class SimpleView:
         self.detection_intervals.clear();self.last_detection_time=None
         self.tones.clear();self.tone_times.clear();self.info.clear()
         self.levels.power.clear();self.levels.history.clear()
-        self.direction.update({'valid':False},time.monotonic())
+        self.direction.update({'valid':False,'drop':True},time.monotonic())
         self.sync_switches()
-        self.help.set('Receiver changed. Use the matching coded file; TONE files measure level, not direction.')
+        files={'coded-20':'01_LOCATE_20kHz_19-21kHz, continuous 19-21 kHz',
+               'coded-gap':'01_LOCATE_18-22kHz_43ms-gap, 43 ms silence'}
+        chosen=files.get(self.controls.profile,'the matching coded file')
+        self.help.set('Play '+chosen+' on the phone. The other beacon will not match this receiver.')
         from beacon_dsp import PROFILES as ALL_PROFILES
         spec=ALL_PROFILES[self.controls.profile]
         self.scope.target_band=(spec['low'],spec['high'])
         self.probe_frequencies=tuple(round(spec['low']+(spec['high']-spec['low'])*i/4) for i in range(5))
 
     def open_audio_folder(self):
-        folder=self.root.parent/'audio'/'phone'/'HF2-20kHz'
+        folder=self.root.parent/'audio'/'phone'/('HF2-gap-test' if self.controls.profile=='coded-gap' else 'HF2-20kHz')
         if self.controls.profile.startswith('imported-'):
             folder=self.root/'beacon_profiles'/self.controls.profile.removeprefix('imported-')
         os.startfile(folder if folder.exists() else self.root/'beacon-audio')
@@ -192,7 +195,7 @@ class SimpleView:
         self.heading.set('Front reference: saved')
         self.radar.front_calibrated=True
         self.radar.resize(type('Size',(),{'width':self.radar.winfo_width(),'height':self.radar.winfo_height()})())
-        self.direction.update({'valid':False},time.monotonic())
+        self.direction.update({'valid':False,'drop':True},time.monotonic())
         self.help.set('Current source saved as front. Keep the array fixed and move the phone to check left and right.')
 
     def build_advanced(self):
@@ -239,7 +242,7 @@ class SimpleView:
         self.help.set('Reconnecting. Scan switch state is preserved.')
     def change_mirror(self):
         self.session.set_mirror(self.mirror.get())
-        self.direction.update({'valid':False},time.monotonic())
+        self.direction.update({'valid':False,'drop':True},time.monotonic())
         self.heading.set('View changed: set front again')
         self.radar.front_calibrated=False
         self.radar.resize(type('Size',(),{'width':self.radar.winfo_width(),'height':self.radar.winfo_height()})())
@@ -296,7 +299,7 @@ class SimpleView:
             elif kind=='direction':
                 if value.get('profile',self.controls.profile)!=self.controls.profile:continue
                 if not self.controls.running:
-                    self.direction.update({'valid':False},now)
+                    self.direction.update({'valid':False,'drop':True},now)
                     continue
                 self.info=value;self.direction.update(value,now)
                 if 'direction_queued_at' in value:rendered_timing=value

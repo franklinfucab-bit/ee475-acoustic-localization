@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "checked_at_utc": "2026-11-02T08:35:48.819588+00:00",
+  "checked_at_utc": "2026-11-03T19:02:13.369094+00:00",
   "desktop": "RX4",
   "checks": [
     {
@@ -18,7 +18,7 @@
       "name": "ram_only_image",
       "passed": true,
       "returncode": 0,
-      "stdout": "{\n  \"path\": \"C:\\\\Users\\\\33296\\\\Desktop\\\\\\u5de5\\u7a0b\\u9879\\u76ee\\\\EE475\\\\SEN0325-Pico-Setup\\\\firmware\\\\sen0325_setup-RAM.uf2\",\n  \"sha256\": \"76470847618d44065001eba3615cf49e19e858a27839dd09543700e7d8471151\",\n  \"blocks\": 428,\n  \"start\": \"0x20000000\",\n  \"end_exclusive\": \"0x2001ac00\",\n  \"sram_only\": true,\n  \"flash_payload_blocks\": 0\n}\n",
+      "stdout": "{\n  \"path\": \"C:\\\\Dev\\\\ee475-acoustic-localization\\\\SEN0325-Pico-Setup\\\\firmware\\\\sen0325_setup-RAM.uf2\",\n  \"sha256\": \"76470847618d44065001eba3615cf49e19e858a27839dd09543700e7d8471151\",\n  \"blocks\": 428,\n  \"start\": \"0x20000000\",\n  \"end_exclusive\": \"0x2001ac00\",\n  \"sram_only\": true,\n  \"flash_payload_blocks\": 0\n}\n",
       "stderr": ""
     },
     {
@@ -39,7 +39,7 @@
       "name": "20khz_model",
       "passed": true,
       "returncode": 0,
-      "stdout": "{\n  \"passed\": true,\n  \"maximum_simulated_error_deg\": 12.967,\n  \"median_processing_ms\": 13.65,\n  \"maximum_processing_ms\": 130.97\n}\n",
+      "stdout": "{\n  \"passed\": true,\n  \"maximum_simulated_error_deg\": 12.967,\n  \"median_processing_ms\": 6.56,\n  \"maximum_processing_ms\": 17.17\n}\n",
       "stderr": ""
     }
   ],

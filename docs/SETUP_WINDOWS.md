@@ -20,7 +20,7 @@ The launcher is a local source refresh/restart. It does not pull GitHub changes.
 
 ## Pico and USB
 
-Follow README's GPIO table. Firmware is RAM-only and may need reloading after a power cycle. The desktop loader uses Raspberry Pi picotool; install/build it from the official project and use a compatible BOOTSEL USB driver. Existing code expects the running device VID 0x2E8A / PID 0x000A. A charge-only USB cable will not work.
+Follow README's GPIO table. Firmware is RAM-only and is lost when USB power is removed. If the Pico comes back as the RPI-RP2 drive, the launcher copies the validated RAM image onto that drive; picotool and the RP2 Boot driver are not required for that path. picotool remains the fallback only when an old application is already running and the drive is absent. The running device uses VID 0x2E8A / PID 0x000A. A charge-only USB cable will not work.
 
 ```powershell
 $env:EE475_PICOTOOL='C:\Path\To\picotool.exe'

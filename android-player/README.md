@@ -1,13 +1,13 @@
-# Beacon Loop 1.0 — Android local audio player
+# Beacon Loop 1.1 — Android local audio player
 
-[Install APK](releases/BeaconLoop-1.0.apk) · [Chinese quick start](QUICKSTART_ZH.md)
+[Install APK](releases/BeaconLoop-1.1.apk) · [Chinese quick start](QUICKSTART_ZH.md)
 
-A small offline transmitter companion for EE475. Choose a local audio file, then play/pause an infinite loop. The current 19–21 kHz beacon is bundled, so the first test does not need a file transfer. Android 8.0+ (API 26), target API 35, package org.ee475.beaconloop.
+A small offline transmitter companion for EE475. Choose a local audio file, then play/pause an infinite loop. Two beacons are bundled: the current 19–21 kHz file and the 18–22 kHz gap test. The first launch still plays 19–21 kHz. Android 8.0+ (API 26), target API 35, package org.ee475.beaconloop.
 
 ## Use
 
 1. Install the APK on the phone. Android may ask you to permit installation from the app used to open it.
-2. Open Beacon Loop. Use the bundled beacon or Choose audio file.
+2. Open Beacon Loop. Choose 19-21 kHz beacon, Gap test 18-22 kHz, or Choose audio file. On the PC, select the matching beacon before Start Scan.
 3. Press Play. Use the phone's media volume buttons; Pause stops playback.
 4. Keep Normalize off for baseline localization tests. Notification controls provide pause/play and stop while the playback service is active.
 
@@ -21,11 +21,12 @@ The PC receiver accepts only a compatible periodic localization code. A file tha
 
 | File | Purpose |
 |---|---|
-| MainActivity.java | File picker, simple play/pause controls and status |
+| MainActivity.java | Built-in beacon buttons, file picker, play/pause and status |
 | LoopService.java | PCM looping, foreground notification and audio focus |
 | AudioLoader.java | Media decoding and size/duration/channel checks |
 | PcmGain.java | Optional bounded constant gain |
-| app/src/main/assets/default-beacon.wav | Unmodified current lossless reference |
+| app/src/main/assets/default-beacon.wav | Unmodified 19–21 kHz lossless reference; first-launch default |
+| app/src/main/assets/gap-beacon.wav | Unmodified 18–22 kHz gap-test WAV |
 | tests/PcmGainTest.java | Nine host checks for gain behavior |
 | Build.ps1 | Local Windows SDK/JDK build and development signing |
 

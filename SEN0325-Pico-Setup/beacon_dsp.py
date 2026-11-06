@@ -20,6 +20,10 @@ PROFILES={
     "coded-ultrasonic":{"label":"Coded localization | 20-22 kHz experimental","low":20040,"high":21960,"center":21000},
     "coded-16-18":{"label":"Stage 1 | 16-18 kHz","low":16000,"high":18000,"center":17000},
     "coded-20":{"label":"Stage 2 | 20 kHz center, 19-21 kHz","low":19000,"high":21000,"center":20000},
+    # Test profile only. One capture is still one 4096-sample period because
+    # samples between RECORD packets are not continuous. The second half is silence.
+    "coded-gap":{"label":"Gap test | 18-22 kHz, 43 ms silence","low":18000,"high":22000,"center":20000,
+                 "active_samples":2048},
 }
 
 from beacon_importer import load_active
@@ -27,10 +31,33 @@ _active_import=load_active(Path(__file__).resolve().parent)
 if _active_import:
     PROFILES[_active_import['profile']]=_active_import['spec']
 
+def gapped_template(config,frequencies,mask):
+    """Wider-band burst, then silence, inside the existing 4096-sample period."""
+    active=int(config['active_samples'])
+    if not 256<=active<=SIZE-256:raise ValueError('Gap test active length does not fit one capture')
+    indices=np.flatnonzero(mask)
+    rng=np.random.default_rng(0xEE4750A9)
+    spectrum=np.zeros(SIZE//2+1,dtype=np.complex128)
+    taper=np.minimum(1,np.minimum((frequencies[indices]-config['low']+12)/100,
+                                  (config['high']-frequencies[indices]+12)/100))
+    spectrum[indices]=taper*np.exp(1j*rng.uniform(-np.pi,np.pi,len(indices)))
+    burst=np.fft.irfft(spectrum,SIZE)
+    edge=64
+    window=np.zeros(SIZE)
+    window[:active]=1
+    ramp=.5-.5*np.cos(np.linspace(0,np.pi,edge))
+    window[:edge]*=ramp
+    window[active-edge:active]*=ramp[::-1]
+    samples=burst*window
+    samples*=.35/max(np.max(np.abs(samples)),1e-12)
+    return samples,np.fft.rfft(samples),mask
+
 def template(profile):
     config=PROFILES[profile]
     frequencies=np.fft.rfftfreq(SIZE,1/RATE)
     mask=(frequencies>=config["low"])&(frequencies<=config["high"])
+    if profile=='coded-gap':
+        return gapped_template(config,frequencies,mask)
     if profile.startswith('imported-'):
         token=config['template_token']
         samples=np.load(Path(__file__).resolve().parent/'beacon_profiles'/token/'period.npy',allow_pickle=False)
@@ -160,7 +187,7 @@ class BeaconEstimator:
         return raw,quality,details
 
     def estimate(self,samples,health,now=None):
-        if self.profile in ('coded-16-18','coded-20') or self.profile.startswith('imported-'):
+        if self.profile in ('coded-16-18','coded-20','coded-gap') or self.profile.startswith('imported-'):
             from highband_dsp import estimate_highband
             return estimate_highband(self,samples,health,now)
         started=time.perf_counter()

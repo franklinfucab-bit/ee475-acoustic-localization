@@ -11,9 +11,9 @@ RX4 adds a joint spectral-delay rescue after the existing estimators fail. It ev
 
 Start with the [English handoff](docs/TEAM_HANDOFF.md) or [中文交接](docs/TEAM_HANDOFF_ZH.md). For a coding agent, read [AI_HANDOFF.md](docs/AI_HANDOFF.md) and [AGENTS.md](AGENTS.md). [FILE_CATALOG.md](docs/FILE_CATALOG.md) lists every published file and its purpose; [INTEGRATION.md](docs/INTEGRATION.md) describes interfaces and future robot work.
 
-**Phone player:** [Beacon Loop 1.0 APK](android-player/releases/BeaconLoop-1.0.apk), [usage and build instructions](android-player/README.md). **New Windows PC:** [setup instructions](docs/SETUP_WINDOWS.md). **Offline checks:** `python tools/verify_handoff.py`.
+**Phone player:** [Beacon Loop 1.1 APK](android-player/releases/BeaconLoop-1.1.apk), [usage and build instructions](android-player/README.md). **New Windows PC:** [setup instructions](docs/SETUP_WINDOWS.md). **Offline checks:** `python tools/verify_handoff.py`.
 
-The repository is a selected team package. Original microphone captures, runtime logs, local configuration and redundant historical binary archives remain in the complete local archive. See [SHARING.md](docs/SHARING.md). The root FILE_INDEX.txt is local-only; the published file catalog describes what a clone actually contains. The [stage 07 notes](stages/07-team-handoff/README.md) record packaging changes without changing the RX4 estimator.
+The repository is a selected team package. Original microphone captures, runtime logs, local configuration and redundant historical binary archives remain in the complete local archive. See [SHARING.md](docs/SHARING.md). The root FILE_INDEX.txt is local-only; the published file catalog describes what a clone actually contains. The [stage 07 notes](stages/07-team-handoff/README.md) record packaging changes without changing the RX4 estimator. Optional Pico–ESP32 UART wiring and a 1000 Hz phase path are on branch `Pico-ESP32`; see [esp32-link/README.md](esp32-link/README.md) and [stage 09](stages/09-esp32-link/README.md). That path does not replace RX4.
 
 ## Start
 

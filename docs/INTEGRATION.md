@@ -8,11 +8,14 @@ flowchart LR
   PC --> Match[Known-code detection]
   Match --> Delay[Primary delay / arrival / joint spectral fit]
   Delay --> View[Radar + waveform + spectrum]
-  PC -. future interface .-> ESP[ESP32 steering controller]
+  Pico -->|UART0 FEAT 300-2000 Hz| ESP[ESP32 phase DOA]
+  ESP -->|UART0 DOA| Pico
+  ESP -->|USB text display-only| ViewESP[Laptop DOA viewer]
   Sensor[Forward distance sensor] -. separate integration .-> ESP
+  ESP -. not implemented .-> Motor[Motors]
 ```
 
-Solid arrows are implemented. Dashed connections are future integration, not working motor control.
+Solid arrows are implemented. The ESP32 path is an optional 1000 Hz phase link on branch `Pico-ESP32`; it does not replace RX4 and does not command motors. Dashed connections remain future integration.
 
 ## Physical and sample interface
 
@@ -46,6 +49,12 @@ Default coded-20 is a continuous periodic wideband coded waveform, not a pure 20
 
 The Android app is a general local loop player. It does not validate the localization code or calibrate the phone speaker. Its default bundled WAV matches the current reference; optional gain leaves rate, phase/code, channels and duration unchanged. Arbitrary alarm modulation or new chirps require matched receiver work and their own stage.
 
-## Proposed future robot interface — not implemented
+## Optional Pico–ESP32 UART — implemented as text only
 
-Agree a versioned message containing sequence, producer monotonic time or receiver-side age, validity/reason, calibrated bearing and quality. Decide the robot-front convention and behavior on stale/invalid data before connecting motors. Distance and obstacle state must come from the separate sensor path. Do not forward an old arrow indefinitely or interpret no detection as permission to turn toward zero degrees.
+Pico `GP0`/`GP1` at 115200 8N1 talk to ESP32 UART2 (default GPIO16 RX / GPIO17 TX) plus common ground. Pico sends `FEAT,v1,...` with six outer phases/coherences and a center-tone flag. ESP32 replies `DOA,v1,seq,age_ms,valid,reason,angle_deg,quality`. `valid=0` is not a 0° heading. Pico turns the ring off if no new `valid=1` arrives within about 400 ms. USB `RECORD` packets are unchanged and must not share the ESP32 serial monitor.
+
+This estimator is the existing 300–2000 Hz narrowband phase fit, not RX4. Use `FREQ 1000` and an audible tone. The 19–21 kHz coded beacon still belongs on the laptop RX4 path.
+
+## Proposed motor interface — not implemented
+
+Agree stale-result behavior before connecting motors. Distance and obstacle state must come from the separate sensor path. Do not forward an old arrow indefinitely or interpret no detection as permission to turn toward zero degrees.

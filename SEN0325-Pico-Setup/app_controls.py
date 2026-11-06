@@ -1,6 +1,7 @@
 """Receiver controls. This application never opens an audio output device."""
 
-PROFILES={'20 kHz beacon | 19-21 kHz':'coded-20'}
+PROFILES={'20 kHz beacon | 19-21 kHz':'coded-20',
+          'Gap test | 18-22 kHz':'coded-gap'}
 
 class ScanControls:
     def __init__(self,session):

@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "purpose": "Phone-file codec check only; not a room or angle test",
+  "file": {
+    "file": "01_LOCATE_18-22kHz_43ms-gap.mp3",
+    "wav": "01_LOCATE_18-22kHz_43ms-gap.wav",
+    "wav_sha256": "e182fddee2615ed15b826e9d781c041ae557e59fcb6aa2ed7feb6274e3e9b9a1",
+    "mp3_sha256": "0aa6cec03b66ef44d4708ea3cbc2adefab025f5b5b3c481bb2f71f8ed4cd69bb",
+    "mp3_bytes": 238916,
+    "rms_change_db": 0.0,
+    "period_alignment_sample": 1152,
+    "period_correlation": 0.96557,
+    "decoded_active_rms": 0.102326,
+    "decoded_gap_rms": 0.000384,
+    "decoded_gap_to_active": 0.00375,
+    "left_channel_rms": 0.0,
+    "peak_decoded": 0.36845
+  }
+}

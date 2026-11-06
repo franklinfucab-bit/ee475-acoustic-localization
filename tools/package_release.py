@@ -74,6 +74,7 @@ PURPOSE={
  'sdk-downloads.json':'Original official SDK package download provenance',
  'merge_apk.py':'Insert compiled dex into unsigned APK resources',
  'BeaconLoop-1.0.apk':'Signed development Android loop-player installation package',
+ 'BeaconLoop-1.1.apk':'Beacon Loop 1.1 with built-in 19-21 kHz and gap-test choices',
  'default-beacon.wav':'Bundled unmodified current lossless phone beacon',
  'verify_handoff.py':'Offline checks runnable without private recordings or a connected board',
  'package_release.py':'Generate file catalogs, checksums and share/local ZIP packages',

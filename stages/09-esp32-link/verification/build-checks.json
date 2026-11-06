@@ -1,0 +1,58 @@
+{
+  "passed": true,
+  "checked_at_utc": "2026-11-04T01:45:11.009557+00:00",
+  "note": "Host protocol and 1000 Hz phase-model checks. No Pico/ESP32 hardware, no motor output, not RX4.",
+  "feat_example": "FEAT,v1,3,1000,0,0,4096,0.000000,0.9500,1,-0.634565,0.9500,1,-0.634565,0.9500,1,0.000000,0.9500,1,0.634565,0.9500,1,0.634565,0.9500,1,1",
+  "checks": [
+    {
+      "name": "parse_roundtrip",
+      "passed": true
+    },
+    {
+      "name": "parse_valid_doa",
+      "passed": true
+    },
+    {
+      "name": "invalid_doa_not_zero_bearing",
+      "passed": true
+    },
+    {
+      "name": "reject_20khz_phase_path",
+      "passed": true
+    },
+    {
+      "name": "reject_empty_capture",
+      "passed": true
+    },
+    {
+      "name": "python_phase_0",
+      "passed": true,
+      "raw_angle_deg": 360.0,
+      "reason": "estimated"
+    },
+    {
+      "name": "python_phase_45",
+      "passed": true,
+      "raw_angle_deg": 45.0,
+      "reason": "estimated"
+    },
+    {
+      "name": "python_phase_90",
+      "passed": true,
+      "raw_angle_deg": 90.0,
+      "reason": "estimated"
+    },
+    {
+      "name": "python_phase_180",
+      "passed": true,
+      "raw_angle_deg": 180.0,
+      "reason": "estimated"
+    },
+    {
+      "name": "python_phase_270",
+      "passed": true,
+      "raw_angle_deg": 270.0,
+      "reason": "estimated"
+    }
+  ]
+}

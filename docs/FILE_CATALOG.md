@@ -1,6 +1,6 @@
 # Published file catalog
 
-326 files. Relative paths start at the repository root. Historical entries are reference material, not the launch path. Original captures/logs and repeated local binary archives are intentionally excluded; see [SHARING.md](SHARING.md).
+336 files. Relative paths start at the repository root. Historical entries are reference material, not the launch path. Original captures/logs and repeated local binary archives are intentionally excluded; see [SHARING.md](SHARING.md).
 
 | File | Role | Function |
 |---|---|---|
@@ -51,6 +51,11 @@
 | `SEN0325-Pico-Setup/tone_filter.h` | Active Pico + desktop receiver | Firmware tone-filter helper |
 | `SEN0325-Pico-Setup/tracking_audio.py` | Active Pico + desktop receiver | Audio reference/playback utilities retained outside normal receive-only controls |
 | `SEN0325-Pico-Setup/verify_ram.py` | Active Pico + desktop receiver | Validate that the supplied UF2 targets RAM rather than Flash |
+| `esp32-link/README.md` | Optional Pico–ESP32 UART | Wiring, 1000 Hz bench steps and board-pin notes |
+| `esp32-link/protocol.py` | Optional Pico–ESP32 UART | FEAT/DOA text parse and format |
+| `esp32-link/view_doa.py` | Optional Pico–ESP32 UART | Display-only ESP32 USB reader; no RX4 and no RECORD |
+| `esp32-link/esp32_doa/esp32_doa.ino` | Optional Pico–ESP32 UART | ESP32 UART2 sketch: parse FEAT, print DOA, no motors |
+| `esp32-link/esp32_doa/phase_doa.h` | Optional Pico–ESP32 UART | 300–2000 Hz phase estimator ported from direction_estimator.py |
 | `SHA256SUMS.txt` | Project documentation / entry | SHA-256 integrity list for published files except itself |
 | `Setup-Windows.ps1` | Project documentation / entry | Create project-local Python environment and validate dependencies |
 | `Start-20kHz.cmd` | Project documentation / entry | Compatibility shortcut to current receiver launcher |
@@ -69,6 +74,7 @@
 | `android-player/app/src/main/res/drawable/ic_beacon.xml` | Android transmitter | Android UI resource/configuration |
 | `android-player/app/src/main/res/values/styles.xml` | Android transmitter | Android UI resource/configuration |
 | `android-player/releases/BeaconLoop-1.0.apk` | Android transmitter | Signed development Android loop-player installation package |
+| `android-player/releases/BeaconLoop-1.1.apk` | Android transmitter | Beacon Loop 1.1 with built-in 19-21 kHz and gap-test choices |
 | `android-player/sdk-downloads.json` | Android transmitter | Original official SDK package download provenance |
 | `android-player/tests/PcmGainTest.java` | Android transmitter | Nine host-side checks for optional gain behavior |
 | `android-player/toolchain.example.json` | Android transmitter | Example local SDK/JDK/Python/signing-key locations |
@@ -303,6 +309,10 @@
 | `stages/07-team-handoff/CHANGE_DETAILS.md` | Stage record / reproducibility evidence | Instructions/report: CHANGE DETAILS |
 | `stages/07-team-handoff/PROGRESS_NOTES.md` | Stage record / reproducibility evidence | Instructions/report: PROGRESS NOTES |
 | `stages/07-team-handoff/README.md` | Stage record / reproducibility evidence | Main project overview / entry point |
+| `stages/09-esp32-link/README.md` | Stage record / reproducibility evidence | Pico–ESP32 UART stage notes |
+| `stages/09-esp32-link/CHANGE_DETAILS.md` | Stage record / reproducibility evidence | Firmware/protocol/viewer change list |
+| `stages/09-esp32-link/verification/build-checks.json` | Stage record / reproducibility evidence | Host FEAT/DOA and 1000 Hz phase-model results |
+| `tests/verify_esp32_link.py` | Verification / maintenance | FEAT/DOA protocol and 1000 Hz phase-model checks |
 | `stages/07-team-handoff/preserved-components.json` | Stage record / reproducibility evidence | Recorded configuration, validation or provenance: preserved components |
 | `stages/07-team-handoff/validation.json` | Stage record / reproducibility evidence | Recorded configuration, validation or provenance: validation |
 | `stages/07-team-handoff/verification/controls.json` | Stage record / reproducibility evidence | Recorded configuration, validation or provenance: controls |

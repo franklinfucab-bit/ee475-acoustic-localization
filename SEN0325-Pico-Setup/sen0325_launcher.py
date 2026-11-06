@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 import queue
 import re
+import shutil
 import subprocess
 import sys
 import threading
@@ -55,6 +56,13 @@ def load_ram(serial_number=None):
         capture_output=True, text=True, timeout=15, creationflags=NO_WINDOW)
     if validation.returncode:
         raise RuntimeError("RAM firmware validation failed: " + validation.stdout + validation.stderr)
+    drives = bootsel_drives()
+    if len(drives) > 1:
+        raise RuntimeError("Multiple RPI-RP2 devices detected. Connect one Pico.")
+    if drives:
+        return copy_ram_image(image, drives[0])
+    if not PICOTOOL.is_file():
+        raise RuntimeError("RPI-RP2 drive was not found, and picotool is not installed. Reconnect USB while holding BOOTSEL.")
     args = [str(PICOTOOL), "load", "-v", "-x", str(image)]
     if serial_number:
         # Application firmware uses a placeholder serial; BOOTSEL has the chip's
@@ -65,6 +73,23 @@ def load_ram(serial_number=None):
     if loaded.returncode:
         raise RuntimeError("RAM loading failed. Reconnect while holding BOOTSEL.\n" + loaded.stdout + loaded.stderr)
     return loaded.stdout.strip()
+
+
+def copy_ram_image(image, drive):
+    """Load RAM firmware through the RPI-RP2 drive. No picotool or RP2 Boot driver."""
+    try:
+        shutil.copyfile(image, Path(drive) / image.name)
+    except OSError:
+        # The Pico reboots and removes the drive once it accepts the UF2.
+        pass
+    deadline = time.monotonic() + 8
+    while time.monotonic() < deadline:
+        if pico_ports():
+            return f"RAM image copied to {drive}"
+        time.sleep(0.25)
+    if bootsel_drives():
+        raise RuntimeError("RPI-RP2 is connected, but copying the RAM firmware did not start the Pico.")
+    return f"RAM image copied to {drive}"
 
 
 class Session:
@@ -231,7 +256,7 @@ class Session:
                                 legacy_firmware = True
                                 log.write('RX2_UPGRADE: replacing legacy v0.5 with validated RAM firmware\n')
                                 break
-                            if line.startswith("SEN0325_SETUP v0.6;"):
+                            if line.startswith("SEN0325_SETUP v0.6;") or line.startswith("SEN0325_SETUP v0.7"):
                                 identified = True
                                 break
                             if time.monotonic() > next_help:
@@ -254,10 +279,13 @@ class Session:
             self.emit("closed", None)
 
     def reload(self, log, serial_number=None):
-        if time.monotonic() - self.last_load < 15:
+        drives = bootsel_drives()
+        if time.monotonic() - self.last_load < (4 if drives else 15):
+            if drives:
+                return
             raise RuntimeError("Retry pending. If still disconnected, reconnect USB while holding BOOTSEL.")
         self.last_load = time.monotonic()
-        self.emit("status", "Validating and loading RAM diagnostic firmware...")
+        self.emit("status", "RPI-RP2 found. Copying RAM firmware..." if drives else "Validating and loading RAM diagnostic firmware...")
         result = load_ram(serial_number)
         log.write("RAM_LOAD: " + result + "\n")
         self.emit("loaded", result)

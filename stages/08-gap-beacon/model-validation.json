@@ -1,0 +1,86 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "name": "coded20_template_unchanged",
+      "passed": true,
+      "detail": "1159cae8484ab19618b52660f0f6ef71f3eeef554e6ba4be0fd002f1db988a7c"
+    },
+    {
+      "name": "gap_is_quiet",
+      "passed": true,
+      "detail": {
+        "active_rms": 0.10135,
+        "gap_rms": 0.0,
+        "ratio": 0.0
+      }
+    },
+    {
+      "name": "energy_in_18_22k",
+      "passed": true,
+      "detail": 0.998756
+    },
+    {
+      "name": "launch_menu_keeps_coded20_first",
+      "passed": true,
+      "detail": [
+        "20 kHz beacon | 19-21 kHz",
+        "Gap test | 18-22 kHz"
+      ]
+    },
+    {
+      "name": "one_click_still_starts_coded20",
+      "passed": true,
+      "detail": true
+    },
+    {
+      "name": "gap_uses_highband_delay",
+      "passed": true,
+      "detail": "coded_matched_filter_highband_delay"
+    },
+    {
+      "name": "synthetic_direction_45",
+      "passed": true,
+      "detail": {
+        "angle": 45,
+        "accepted_windows": 5,
+        "max_error_deg": 0.248
+      }
+    },
+    {
+      "name": "synthetic_direction_90",
+      "passed": true,
+      "detail": {
+        "angle": 90,
+        "accepted_windows": 5,
+        "max_error_deg": 0.11
+      }
+    },
+    {
+      "name": "synthetic_direction_270",
+      "passed": true,
+      "detail": {
+        "angle": 270,
+        "accepted_windows": 5,
+        "max_error_deg": 0.161
+      }
+    }
+  ],
+  "synthetic_angles": [
+    {
+      "angle": 45,
+      "accepted_windows": 5,
+      "max_error_deg": 0.248
+    },
+    {
+      "angle": 90,
+      "accepted_windows": 5,
+      "max_error_deg": 0.11
+    },
+    {
+      "angle": 270,
+      "accepted_windows": 5,
+      "max_error_deg": 0.161
+    }
+  ]
+}

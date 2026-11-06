@@ -26,12 +26,12 @@ target_compile_definitions(sen0325_setup PRIVATE
     # TinyUSB only arms OUT when RX FIFO space can hold one transfer buffer.
     CFG_TUD_CDC_RX_BUFSIZE=${RX2_USB_EP_BUFFER_BYTES}
     CFG_TUD_CDC_EP_BUFSIZE=${RX2_USB_EP_BUFFER_BYTES})
-pico_set_program_version(sen0325_setup "0.6-RX2")
+pico_set_program_version(sen0325_setup "0.7-LINK")
 # The 48 kHz unpacking and three-bin detector must finish within each DMA block.
 # Keep debug symbols while optimizing this application source for real-time use.
 set_source_files_properties(main.c PROPERTIES COMPILE_OPTIONS "-O3")
 pico_generate_pio_header(sen0325_setup ${CMAKE_CURRENT_LIST_DIR}/sen0325_i2s.pio)
-target_link_libraries(sen0325_setup pico_stdlib hardware_pio hardware_dma hardware_irq hardware_clocks m)
+target_link_libraries(sen0325_setup pico_stdlib hardware_pio hardware_dma hardware_irq hardware_clocks hardware_uart m)
 pico_enable_stdio_usb(sen0325_setup 1)
 pico_enable_stdio_uart(sen0325_setup 0)
 pico_add_extra_outputs(sen0325_setup)

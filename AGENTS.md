@@ -11,4 +11,4 @@ Read README.md and docs/ROLES.md before changes. Active desktop sources remain i
 - Local microphone recordings remain local. Record exact packet sequences and finite capture durations. Do not fabricate phone pause times or true angles.
 - Prefer conservative, optional audio processing; preserve original files. Phone gain normalization is not microphone ADC calibration or a guarantee of range.
 
-Handoff update (2026-11-02): read docs/TEAM_HANDOFF.md, docs/AI_HANDOFF.md and docs/INTEGRATION.md. Stage 07 tracks packaging/portability; RX4 DSP is still stage 06. tools/verify_handoff.py runs checks available in a fresh clone. Private recording fixtures are deliberately excluded, not fabricated. See docs/SHARING.md.
+Handoff update (2026-11-02): read docs/TEAM_HANDOFF.md, docs/AI_HANDOFF.md and docs/INTEGRATION.md. Stage 07 tracks packaging/portability; RX4 DSP is still stage 06. Stage 09 on branch Pico-ESP32 adds UART0 FEAT/DOA for a 300–2000 Hz ESP32 phase fit; it does not replace RX4 or command motors. tools/verify_handoff.py runs checks available in a fresh clone. Private recording fixtures are deliberately excluded, not fabricated. See docs/SHARING.md.

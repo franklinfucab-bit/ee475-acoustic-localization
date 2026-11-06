@@ -93,9 +93,10 @@ class DirectionState:
     def update(self, packet, now):
         previous,_=self.current(now)
         if not packet["valid"]:
-            self.angle = None
-            self.confidence = None
-            self.visual_from=None
+            if packet.get("drop"):
+                self.angle = None
+                self.confidence = None
+                self.visual_from=None
             return
         self.angle = packet["angle_deg"] % 360
         self.visual_from=previous if previous is not None else self.angle

@@ -10,6 +10,7 @@ Configured runtime: C:/Tools/Embedded/venv/Scripts/python.exe.
 - replay_rx4_trial.py <trial.json>: exact RX3/RX4 comparison using the preserved before-RX4 source.
 - plot_beacon_waveform.py: plot the unmodified current phone MP3.
 - verify_raw_packet.py, verify_crc32_hardware.py, verify_packet_recovery_hardware.py and benchmark_latency.py: transport checks; live tools require exclusive serial access.
+- verify_esp32_link.py: Pico–ESP32 FEAT/DOA text and 1000 Hz phase-model checks. Not RX4 and not a hardware UART test.
 
 Old phase-specific tools are in legacy/tests. Current fixtures may be read from legacy/stages; current output belongs in stages/06-joint-delay. Plotting uses Matplotlib; the configured Python base installation supplies Pillow if the embedded venv lacks it. No physical accuracy claim follows from generated tests or replay counts.
 

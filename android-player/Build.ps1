@@ -23,7 +23,7 @@ $sources = @(Get-ChildItem -LiteralPath (Join-Path $androidRoot 'app/src/main/ja
 $bootClasspath = $config.platform_jar + ';' + (Join-Path $tools 'core-lambda-stubs.jar')
 Run-Checked (Join-Path $javaBin 'javac.exe') @('-encoding','UTF-8','-source','8','-target','8','-Xlint:-options','-bootclasspath',$bootClasspath,'-d',(Join-Path $build 'classes'),('@'+(Join-Path $build 'sources.txt')))
 Run-Checked (Join-Path $javaBin 'jar.exe') @('--create','--file',(Join-Path $build 'classes.jar'),'-C',(Join-Path $build 'classes'),'.')
-Run-Checked (Join-Path $tools 'd8.bat') @('--lib',$config.platform_jar,'--min-api','26','--output',(Join-Path $build 'dex'),(Join-Path $build 'classes.jar'))
+Run-Checked (Join-Path $javaBin 'java.exe') @('-cp',(Join-Path $tools 'lib\d8.jar'),'com.android.tools.r8.D8','--lib',$config.platform_jar,'--min-api','26','--output',(Join-Path $build 'dex'),(Join-Path $build 'classes.jar'))
 $pythonExe = if ($config.python_exe) { $config.python_exe } else { 'python' }
 Run-Checked $pythonExe @((Join-Path $androidRoot 'tools/merge_apk.py'),(Join-Path $build 'resources.apk'),(Join-Path $build 'dex/classes.dex'),(Join-Path $build 'unsigned.apk'))
 Run-Checked (Join-Path $tools 'zipalign.exe') @('-p','-f','4',(Join-Path $build 'unsigned.apk'),(Join-Path $build 'aligned.apk'))
@@ -33,7 +33,7 @@ New-Item -ItemType Directory -Path $keyFolder -Force | Out-Null
 if (-not (Test-Path -LiteralPath $keystore)) {
     Run-Checked (Join-Path $javaBin 'keytool.exe') @('-genkeypair','-keystore',$keystore,'-alias','ee475-beacon','-keyalg','RSA','-keysize','2048','-validity','10000','-storepass','android','-keypass','android','-dname','CN=EE475 Development, OU=Project, O=EE475, C=US')
 }
-$apk=Join-Path $releases 'BeaconLoop-1.0.apk'
+$apk=Join-Path $releases 'BeaconLoop-1.1.apk'
 Run-Checked (Join-Path $tools 'apksigner.bat') @('sign','--ks',$keystore,'--ks-key-alias','ee475-beacon','--ks-pass','pass:android','--key-pass','pass:android','--out',$apk,(Join-Path $build 'aligned.apk'))
 Run-Checked (Join-Path $tools 'apksigner.bat') @('verify','--verbose',$apk)
 Run-Checked (Join-Path $tools 'zipalign.exe') @('-c','4',$apk)

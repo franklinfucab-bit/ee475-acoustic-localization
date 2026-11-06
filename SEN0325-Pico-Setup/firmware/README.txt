@@ -1,6 +1,6 @@
 EE475 RX2 — FIRMWARE 0.6 (27 OCTOBER 2026)
 
-sen0325_setup-RAM.uf2: validated RP2040 SRAM-only image. The current launcher uses this file for BOOTSEL loading and upgrading a detected v0.5 application.
+sen0325_setup-RAM.uf2: validated RP2040 SRAM-only image. When the Pico is the RPI-RP2 drive, the launcher copies this file onto that drive. picotool remains available for a running v0.5 application when the drive is absent.
 sen0325_setup-RAM.elf: matching debug symbols/executable from the same build.
 
 48 kHz, 4096 frames, seven signed 16-bit channels; GPIO mapping and sample unpacking preserved.

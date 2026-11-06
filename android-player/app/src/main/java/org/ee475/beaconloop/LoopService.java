@@ -58,6 +58,15 @@ public final class LoopService extends Service {
         status="Ready; the next play starts at the beginning";publish();
     }
     private AudioAttributes attributes(){return new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA).setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build();}
+    private InputStream openSource(String source)throws IOException{
+        if(source==null||source.length()==0)return getAssets().open("default-beacon.wav");
+        if(source.startsWith("asset:")){
+            String name=source.substring(6);
+            if(!name.equals("default-beacon.wav")&&!name.equals("gap-beacon.wav"))throw new IOException("Unknown bundled beacon");
+            return getAssets().open(name);
+        }
+        return getContentResolver().openInputStream(Uri.parse(source));
+    }
     private void load(String source,String name) {
         if(loading)return;pauseNow(true);releaseTrack();loading=true;status="Loading audio locally…";publish();
         worker.execute(()->{
@@ -67,7 +76,7 @@ public final class LoopService extends Service {
                 File file;
                 if("cache".equals(source)&&selected.isFile())file=selected;
                 else {
-                    InputStream input=(source==null||source.length()==0)?getAssets().open("default-beacon.wav"):getContentResolver().openInputStream(Uri.parse(source));
+                    InputStream input=openSource(source);
                     if(input==null)throw new IOException("Cannot open the selected file");
                     try(InputStream in=input;OutputStream out=new FileOutputStream(incoming)) {
                         byte[] buffer=new byte[65536];int count,total=0;

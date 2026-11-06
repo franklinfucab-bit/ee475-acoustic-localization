@@ -1,7 +1,7 @@
 # Team handoff — 2 November 2026
 
 This is the SEN0325/Pico acoustic-bearing contribution to **Tagalong (EE475)**.
-Current receiver: **RX4**. Pico firmware: **v0.6-RX2**, RAM image. Android transmitter: **Beacon Loop 1.0**.
+Current receiver: **RX4**. Pico firmware: **v0.6-RX2**, RAM image. Android transmitter: **Beacon Loop 1.1**.
 
 ## Read first
 
@@ -26,7 +26,7 @@ The 29 October recording contains several playback rounds and manual interruptio
 
 ## First bench session
 
-Use the GPIO table in the root README, connect Pico, launch the desktop app and select Start Scan. Install [BeaconLoop-1.0.apk](../android-player/releases/BeaconLoop-1.0.apk) on the phone, then play its bundled beacon. Start at about 0.5 m with a fixed phone position and fixed volume. Check that the received spectrum shows the expected 19–21 kHz band before judging the arrow. Log the true physical angle and all intentional pauses.
+Use the GPIO table in the root README, connect Pico, launch the desktop app and select Start Scan. Install [BeaconLoop-1.1.apk](../android-player/releases/BeaconLoop-1.1.apk) on the phone, then play 19-21 kHz beacon or Gap test 18-22 kHz. Use the same choice on the PC. Start at about 0.5 m with a fixed phone position and fixed volume. Check that the received spectrum shows the expected 19–21 kHz band before judging the arrow. Log the true physical angle and all intentional pauses.
 
 Try the same file at known bearings and distances, changing only one variable per run. Keep normalization off for the baseline. The phone speaker and microphone array do not have a calibrated acoustic transfer function; software gain is not receiver ADC calibration.
 
@@ -43,7 +43,7 @@ Try the same file at known bearings and distances, changing only one variable pe
 2. Record fixed known bearings with timestamps; inspect both raw and displayed bearings.
 3. Investigate current-frame arrival-fit alternatives and multipath using that evidence. Do not freeze or reject a large turn just because it is large.
 4. Compare waveform experiments separately. Any new beacon must match the desktop reference; ordinary music or an arbitrary alarm file is not automatically compatible.
-5. Agree an ESP32 message format, clock/age handling and stale-result behavior before writing motor output.
+5. On branch `Pico-ESP32`, bench the optional UART link with a 1000 Hz tone (`esp32-link/README.md`). Keep RX4 for the 19–21 kHz coded beacon. Do not attach motors to `DOA` lines.
 
 ## History and sharing
 

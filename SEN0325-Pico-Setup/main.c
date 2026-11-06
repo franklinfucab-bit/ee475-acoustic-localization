@@ -11,11 +11,13 @@
 #include "hardware/irq.h"
 #include "hardware/pio.h"
 #include "hardware/sync.h"
+#include "hardware/uart.h"
 #include "sen0325_i2s.pio.h"
 #include "tone_filter.h"
 #include "crc32_fast.h"
 
 enum { DATA_BASE = 6, BCLK_PIN = 10, WS_PIN = 11, LED_CLK = 12, LED_DAT = 13 };
+enum { LINK_TX_PIN = 0, LINK_RX_PIN = 1, LINK_BAUD = 115200, LED_COUNT = 12, LED_BRIGHT = 2, LED_STALE_US = 400000 };
 enum { SAMPLE_RATE = 48000, FRAMES = 1024, WORDS_PER_FRAME = 8, WORDS = FRAMES * WORDS_PER_FRAME };
 static const char *names[8] = {"D0L", "D0R", "D1L", "D1R", "D2L", "D2R", "D3L_UNUSED", "D3R_CENTER"};
 static PIO capture_pio = pio0;
@@ -45,6 +47,10 @@ static int16_t raw_audio[RAW_FRAMES][RAW_CHANNELS];
 static bool raw_recording,raw_stream;
 static uint32_t raw_frames, raw_sequence;
 static uint32_t raw_request_started_us;
+static char link_line[96];
+static size_t link_used;
+static uint32_t last_valid_doa_us;
+static bool led_bearing_on;
 
 static void reset_stats(channel_stats *stats) {
     memset(stats, 0, sizeof(channel_stats) * 8);
@@ -73,6 +79,94 @@ static void led_ring_off(void) {
     for (uint i = 0; i < 8; ++i) led_byte(0xff);
     gpio_put(LED_CLK, 0);
     gpio_put(LED_DAT, 0);
+    led_bearing_on = false;
+}
+
+static void led_show_bearing(float angle_deg) {
+    unsigned on = (unsigned)lroundf(fmodf(angle_deg + 360.f, 360.f) / 30.f) % LED_COUNT;
+    for (uint i = 0; i < 4; ++i) led_byte(0);
+    for (uint led = 0; led < LED_COUNT; ++led) {
+        uint8_t bright = (led == on) ? (uint8_t)(0xe0u | LED_BRIGHT) : 0xe0u;
+        led_byte(bright);
+        led_byte(led == on ? 16 : 0);
+        led_byte(0);
+        led_byte(led == on ? 16 : 0);
+    }
+    for (uint i = 0; i < 8; ++i) led_byte(0xff);
+    gpio_put(LED_CLK, 0);
+    gpio_put(LED_DAT, 0);
+    led_bearing_on = true;
+}
+
+static void link_init(void) {
+    uart_init(uart0, LINK_BAUD);
+    gpio_set_function(LINK_TX_PIN, GPIO_FUNC_UART);
+    gpio_set_function(LINK_RX_PIN, GPIO_FUNC_UART);
+    uart_set_hw_flow(uart0, false, false);
+    uart_set_format(uart0, 8, 1, UART_PARITY_NONE);
+}
+
+static int channel_present(uint ch) {
+    if (!accumulated_frames) return 0;
+    float power = accumulated[ch].tone_power / (accumulated_frames / FRAMES);
+    float reference = accumulated[ch].tone_reference / (accumulated_frames / FRAMES);
+    return tone_is_present(power, reference, accumulated[ch].clips);
+}
+
+static void link_send_feat(int rx_stall) {
+    char line[240];
+    float phase[6] = {0}, coherence[6] = {0};
+    int present[6] = {0}, center = 0;
+    if (accumulated_frames) {
+        center = channel_present(7);
+        for (uint ch = 0; ch < 6; ++ch) {
+            float re = accumulated[ch].cross_re, im = accumulated[ch].cross_im;
+            float den = sqrtf(accumulated[ch].tone_power * accumulated[7].tone_power);
+            coherence[ch] = den > 0 ? fminf(1, sqrtf(re * re + im * im) / den) : 0;
+            phase[ch] = atan2f(im, re);
+            present[ch] = channel_present(ch);
+        }
+    }
+    snprintf(line, sizeof line,
+        "FEAT,v1,%" PRIu32 ",%u,%" PRIu32 ",%d,%" PRIu32
+        ",%.6f,%.4f,%d,%.6f,%.4f,%d,%.6f,%.4f,%d,%.6f,%.4f,%d,%.6f,%.4f,%d,%.6f,%.4f,%d,%d\n",
+        report_sequence, tone_frequency, dropped_buffers, rx_stall, accumulated_frames,
+        phase[0], coherence[0], present[0], phase[1], coherence[1], present[1],
+        phase[2], coherence[2], present[2], phase[3], coherence[3], present[3],
+        phase[4], coherence[4], present[4], phase[5], coherence[5], present[5], center);
+    uart_puts(uart0, line);
+}
+
+static void apply_doa_line(const char *line) {
+    unsigned long seq = 0, age = 0;
+    int valid = 0;
+    char reason[32];
+    float angle = 0, quality = 0;
+    if (sscanf(line, "DOA,v1,%lu,%lu,%d,%31[^,],%f,%f", &seq, &age, &valid, reason, &angle, &quality) != 6)
+        return;
+    if (valid == 1 && isfinite(angle) && isfinite(quality) && quality >= 0 && quality <= 1 && age <= 400) {
+        last_valid_doa_us = time_us_32();
+        led_show_bearing(angle);
+        return;
+    }
+    led_ring_off();
+}
+
+static void link_poll(void) {
+    while (uart_is_readable(uart0)) {
+        char c = (char)uart_getc(uart0);
+        if (c == '\r' || c == '\n') {
+            if (link_used) {
+                link_line[link_used] = 0;
+                apply_doa_line(link_line);
+                link_used = 0;
+            }
+        } else if (c >= 32 && c < 127 && link_used + 1 < sizeof link_line) {
+            link_line[link_used++] = c;
+        }
+    }
+    if (led_bearing_on && (uint32_t)(time_us_32() - last_valid_doa_us) > LED_STALE_US)
+        led_ring_off();
 }
 
 static void capture_irq(void) {
@@ -239,9 +333,7 @@ static void merge_stats(const channel_stats *stats) {
     }
     accumulated_frames += FRAMES;
 }
-static void print_stats(void) {
-    bool rx_stall = (capture_pio->fdebug & (1u << sm)) != 0;
-    ++report_sequence;
+static void print_stats(int rx_stall) {
     printf("FRAME frames=%" PRIu32 " fs=48000 dropped=%" PRIu32 " rx_stall=%d end_us=%" PRIu64 " process_us=%" PRIu32 " seq=%" PRIu32 "\n", accumulated_frames, dropped_buffers, rx_stall, time_us_64(),maximum_process_us,report_sequence);
     capture_pio->fdebug = 1u << sm;
     maximum_process_us = 0;
@@ -279,11 +371,24 @@ static void print_stats(void) {
     accumulated_frames = 0;
 }
 
+static void report_features(bool usb) {
+    bool rx_stall = (capture_pio->fdebug & (1u << sm)) != 0;
+    ++report_sequence;
+    link_send_feat(rx_stall ? 1 : 0);
+    if (usb) print_stats(rx_stall ? 1 : 0);
+    else {
+        capture_pio->fdebug = 1u << sm;
+        maximum_process_us = 0;
+        reset_stats(accumulated);
+        accumulated_frames = 0;
+    }
+}
+
 static void banner(void) {
-    printf("SEN0325_SETUP v0.6; state=%s; GPIO logic=3.3V; tone_hz=%u; phase_reference=D3R_CENTER; transport=RX2; usb_fifo=%u; usb_ep_buffer=%u\n", running ? "RUNNING" : "IDLE", tone_frequency,CFG_TUD_CDC_TX_BUFSIZE,CFG_TUD_CDC_EP_BUFSIZE);
-    puts("D0=GP6 D1=GP7 D2=GP8 D3=GP9 BCLK=GP10 WS=GP11 LED_CK=GP12 LED_DA=GP13");
+    printf("SEN0325_SETUP v0.7-LINK; state=%s; GPIO logic=3.3V; tone_hz=%u; phase_reference=D3R_CENTER; transport=RX2; usb_fifo=%u; usb_ep_buffer=%u\n", running ? "RUNNING" : "IDLE", tone_frequency,CFG_TUD_CDC_TX_BUFSIZE,CFG_TUD_CDC_EP_BUFSIZE);
+    puts("D0=GP6 D1=GP7 D2=GP8 D3=GP9 BCLK=GP10 WS=GP11 LED_CK=GP12 LED_DA=GP13 LINK_TX=GP0 LINK_RX=GP1");
     puts("Commands: START STOP RECORD STATUS LEDOFF HELP FREQ <300..22000> TONECHECK DOACHECK CRC32CHECK");
-    puts("START only after wiring/power checks. Host estimates bearing from synchronous phase telemetry; no motor commands.");
+    puts("START only after wiring/power checks. UART0 FEAT goes to ESP32; USB RECORD path is unchanged. No motor commands.");
 }
 static void tone_check(void) {
     if (running) { puts("TONECHECK STOP_FIRST"); return; }
@@ -313,7 +418,7 @@ static void tone_check(void) {
 static void command(char *line) {
     for (char *p = line; *p; ++p) *p = (char)toupper((unsigned char)*p);
     if (!strcmp(line, "START")) { raw_recording=raw_stream=false; start_capture(); }
-    else if (!strcmp(line, "STOP")) { stop_capture(); raw_recording=raw_stream=false; puts("STOPPED; clocks LOW"); }
+    else if (!strcmp(line, "STOP")) { stop_capture(); raw_recording=raw_stream=false; led_ring_off(); puts("STOPPED; clocks LOW"); }
     else if (!strcmp(line, "RECORD")) {
         if(running && !raw_stream) {puts("RECORD STOP_FIRST");return;}
         raw_request_started_us=time_us_32();
@@ -408,6 +513,7 @@ int main(void) {
     stdio_init_all();
     // Binary audio must never have LF bytes translated to CRLF.
     stdio_set_translate_crlf(&stdio_usb,false);
+    link_init();
     tone_configure(1000);
     led_ring_off();
     reset_stats(accumulated);
@@ -424,6 +530,7 @@ int main(void) {
             else if (ch == 8 || ch == 127) { if (used) --used; }
             else if (ch >= 32 && ch < 127 && used + 1 < sizeof(line)) line[used++] = (char)ch;
         }
+        link_poll();
         if (running) {
             for (int i = 0; i < 2; ++i) {
                 uint32_t irq_state = save_and_disable_interrupts();
@@ -451,8 +558,7 @@ int main(void) {
                 } else processing_buffer = -1;
             }
             if (running && !raw_stream && time_reached(report_at)) {
-                if (connected) print_stats();
-                else { reset_stats(accumulated); accumulated_frames = 0; }
+                report_features(connected);
                 report_at = make_timeout_time_ms(250);
             }
         }

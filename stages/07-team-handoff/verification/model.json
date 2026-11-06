@@ -35,7 +35,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 15.55,
+        "processing_ms": 6.28,
         "angle_deg": 359.78,
         "raw_angle_deg": 0.1282833615604589,
         "confidence": 0.8,
@@ -462,7 +462,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 12.58,
+        "processing_ms": 6.07,
         "angle_deg": 44.06,
         "raw_angle_deg": 44.013048202525155,
         "confidence": 0.802,
@@ -889,7 +889,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 13.69,
+        "processing_ms": 6.02,
         "angle_deg": 90.22,
         "raw_angle_deg": 90.0698811963344,
         "confidence": 0.809,
@@ -1316,7 +1316,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 12.38,
+        "processing_ms": 6.32,
         "angle_deg": 180.18,
         "raw_angle_deg": 180.2781366821601,
         "confidence": 0.796,
@@ -1743,7 +1743,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 12.76,
+        "processing_ms": 6.12,
         "angle_deg": 268.92,
         "raw_angle_deg": 268.6107015085697,
         "confidence": 0.791,
@@ -2170,7 +2170,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 12.16,
+        "processing_ms": 6.54,
         "angle_deg": 359.83,
         "raw_angle_deg": 359.4441604964237,
         "confidence": 0.8,
@@ -2597,7 +2597,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 11.96,
+        "processing_ms": 7.24,
         "angle_deg": 4.73,
         "raw_angle_deg": 6.023328213339145,
         "confidence": 0.633,
@@ -3024,7 +3024,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 12.36,
+        "processing_ms": 6.14,
         "angle_deg": 42.69,
         "raw_angle_deg": 43.29413829835787,
         "confidence": 0.711,
@@ -3451,7 +3451,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 22.9,
+        "processing_ms": 6.16,
         "angle_deg": 90.84,
         "raw_angle_deg": 91.83882767890555,
         "confidence": 0.576,
@@ -3878,7 +3878,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 12.27,
+        "processing_ms": 6.64,
         "angle_deg": 176.42,
         "raw_angle_deg": 175.05029233038712,
         "confidence": 0.701,
@@ -4305,7 +4305,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 13.03,
+        "processing_ms": 6.04,
         "angle_deg": 279.62,
         "raw_angle_deg": 282.9667416719842,
         "confidence": 0.778,
@@ -4732,7 +4732,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 12.97,
+        "processing_ms": 6.51,
         "angle_deg": 356.11,
         "raw_angle_deg": 355.641767725216,
         "confidence": 0.683,
@@ -5159,7 +5159,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 13.35,
+        "processing_ms": 6.66,
         "angle_deg": 1.69,
         "raw_angle_deg": 1.638267146940064,
         "confidence": 0.792,
@@ -5586,7 +5586,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 12.75,
+        "processing_ms": 6.43,
         "angle_deg": 45.71,
         "raw_angle_deg": 46.497061561127445,
         "confidence": 0.803,
@@ -6013,7 +6013,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 13.01,
+        "processing_ms": 6.24,
         "angle_deg": 92.23,
         "raw_angle_deg": 92.72005164648097,
         "confidence": 0.752,
@@ -6440,7 +6440,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 13.55,
+        "processing_ms": 7.45,
         "angle_deg": 180.75,
         "raw_angle_deg": 180.39403446516403,
         "confidence": 0.777,
@@ -6867,7 +6867,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 12.22,
+        "processing_ms": 7.31,
         "angle_deg": 269.16,
         "raw_angle_deg": 269.2765654467539,
         "confidence": 0.784,
@@ -7294,7 +7294,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 14.37,
+        "processing_ms": 6.81,
         "angle_deg": 356.95,
         "raw_angle_deg": 355.682994199277,
         "confidence": 0.754,
@@ -7721,7 +7721,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 13.54,
+        "processing_ms": 6.02,
         "angle_deg": 359.18,
         "raw_angle_deg": 359.05860393277845,
         "confidence": 0.807,
@@ -8148,7 +8148,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 13.0,
+        "processing_ms": 6.26,
         "angle_deg": 45.02,
         "raw_angle_deg": 44.836193904376934,
         "confidence": 0.806,
@@ -8575,7 +8575,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 15.75,
+        "processing_ms": 5.92,
         "angle_deg": 90.89,
         "raw_angle_deg": 91.47378240336008,
         "confidence": 0.808,
@@ -9002,7 +9002,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 24.6,
+        "processing_ms": 8.08,
         "angle_deg": 180.62,
         "raw_angle_deg": 180.56722904697983,
         "confidence": 0.805,
@@ -9429,7 +9429,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 25.27,
+        "processing_ms": 6.37,
         "angle_deg": 269.3,
         "raw_angle_deg": 268.97381559483426,
         "confidence": 0.801,
@@ -9856,7 +9856,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 13.0,
+        "processing_ms": 6.53,
         "angle_deg": 359.67,
         "raw_angle_deg": 359.7901321642588,
         "confidence": 0.806,
@@ -10283,7 +10283,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 18.32,
+        "processing_ms": 5.86,
         "angle_deg": 359.12,
         "raw_angle_deg": 359.0612600176413,
         "confidence": 0.8,
@@ -10710,7 +10710,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 14.32,
+        "processing_ms": 6.77,
         "angle_deg": 44.97,
         "raw_angle_deg": 44.66315044152107,
         "confidence": 0.799,
@@ -11137,7 +11137,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 15.71,
+        "processing_ms": 6.62,
         "angle_deg": 90.06,
         "raw_angle_deg": 90.13079149553097,
         "confidence": 0.806,
@@ -11564,7 +11564,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 17.57,
+        "processing_ms": 6.18,
         "angle_deg": 180.01,
         "raw_angle_deg": 180.0271641896808,
         "confidence": 0.807,
@@ -11991,7 +11991,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 13.08,
+        "processing_ms": 6.93,
         "angle_deg": 270.5,
         "raw_angle_deg": 270.4562937817641,
         "confidence": 0.803,
@@ -12418,7 +12418,7 @@
           21000
         ],
         "reason": "estimated",
-        "processing_ms": 13.18,
+        "processing_ms": 7.26,
         "angle_deg": 0.23,
         "raw_angle_deg": 0.6172002156259178,
         "confidence": 0.803,
@@ -13384,7 +13384,7 @@
   ],
   "audible_template_and_estimator_unchanged": true,
   "maximum_simulated_error_deg": 12.967,
-  "median_processing_ms": 13.65,
-  "maximum_processing_ms": 130.97,
+  "median_processing_ms": 6.56,
+  "maximum_processing_ms": 17.17,
   "limitation": "Generated samples including response tilt, independent carrier phase offsets, a narrow tone and one delayed echo. No real phone, physical angular accuracy, range or hearing acceptance claim."
 }

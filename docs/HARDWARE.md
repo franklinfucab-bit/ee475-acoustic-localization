@@ -36,7 +36,19 @@ MIC_CK    MIC_WS
 GND       VIN
 ```
 
-Keep the known working 3.3 V microphone-test supply and the ring LEDs off. Vendor documents for related revisions differ on VIN; this milestone does not change the supply or validate a 5 V configuration. The Pico GPIO uses 3.3 V logic. Disconnect USB before changing wiring and do not confuse 3V3 OUT with 3V3_EN. LED illumination needs a separately reviewed power design.
+Keep the known working 3.3 V microphone-test supply. Vendor documents for related revisions differ on VIN; this milestone does not change the supply or validate a 5 V configuration. The Pico GPIO uses 3.3 V logic. Disconnect USB before changing wiring and do not confuse 3V3 OUT with 3V3_EN. LED illumination needs a separately reviewed power design. The optional ESP32 path may light one dim ring LED after a valid `DOA`; use `LEDOFF` and stop if the 3.3 V microphone rail sags.
+
+## Optional Pico–ESP32 UART (branch Pico-ESP32)
+
+Do not move GP6–GP13. Add only these three wires. Power Pico and ESP32 from separate USB cables; common ground only. Do not feed the ESP32 from Pico 3V3 OUT.
+
+| Pico | Pico physical pin | ESP32 DevKit V1 (WROOM) |
+| --- | --- | --- |
+| GP0 (UART0 TX) | 1 | GPIO16 (UART2 RX) |
+| GP1 (UART0 RX) | 2 | GPIO17 (UART2 TX) |
+| GND | any GND | GND |
+
+TX must be crossed. NINA-B306 is not part of this link. See [esp32-link/README.md](../esp32-link/README.md).
 
 ## Capture configuration
 

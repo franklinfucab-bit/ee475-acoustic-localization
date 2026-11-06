@@ -153,7 +153,8 @@ def estimate_highband(receiver,samples,health,now=None):
     now=time.monotonic() if now is None else now
     center=receiver.spec['center']
     base={'valid':False,'frequency':center,'profile':receiver.profile,
-          'method':'coded_matched_filter_highband_delay','received_at':now,'stage':'HF2' if receiver.profile!='coded-16-18' else 'HF1.1',
+          'method':'coded_matched_filter_highband_delay','received_at':now,
+          'stage':'GAP-TEST' if receiver.profile=='coded-gap' else 'HF2' if receiver.profile!='coded-16-18' else 'HF1.1',
           'band_low_hz':receiver.spec['low'],'band_high_hz':receiver.spec['high']}
     telemetry={}
     def finish(reason,**details):
@@ -185,6 +186,13 @@ def estimate_highband(receiver,samples,health,now=None):
     envelope=np.abs(impulse)
     positions=np.arange(SIZE)
     width=max(16,round(2*RATE/(receiver.spec['high']-receiver.spec['low'])))
+    # 19-21 kHz and the gap test share one tracking rule so the audio comparison
+    # uses the same standard. Hit follows the peak. A wider peak still has the
+    # code; the old concentration cut turned Hit off while the microphones were
+    # still receiving it. Empty captures stay near 0.05. The 16-18 kHz profile
+    # keeps the concentration gate.
+    track_each_capture=receiver.profile in ('coded-20','coded-gap')
+    concentration_min=0.10 if track_each_capture else CONCENTRATION_MIN
     pnr=[];concentrations=[];present=[];channel_diagnostics=[]
     for ch,name in enumerate(CHANNELS):
         peak=int(envelope[ch].argmax())
@@ -192,7 +200,7 @@ def estimate_highband(receiver,samples,health,now=None):
         noise=np.sqrt(np.mean(envelope[ch,distance>width]**2))
         ratio=float(20*np.log10(max(envelope[ch,peak],1e-12)/max(noise,1e-12)))
         fraction=float(np.sum(envelope[ch,distance<=width]**2)/max(np.sum(envelope[ch]**2),1e-12))
-        hit=bool(ratio>=PNR_MIN and fraction>=CONCENTRATION_MIN and rms[ch]>=.25)
+        hit=bool(ratio>=PNR_MIN and rms[ch]>=.25 and (track_each_capture or fraction>=concentration_min))
         pnr.append(ratio);concentrations.append(fraction);present.append(hit)
         a,b,c=np.log(np.maximum(envelope[ch,(peak+np.array([-1,0,1]))%SIZE],1e-12))
         offset=float(np.clip(.5*(a-c)/(a-2*b+c),-.5,.5)) if abs(a-2*b+c)>1e-12 else 0.
@@ -205,10 +213,12 @@ def estimate_highband(receiver,samples,health,now=None):
     details={'code_channels':hits,'code_pnr_db':round(float(np.median(pnr)),2),
              'code_concentration':round(float(np.median(concentrations)),3),
              'band_rms16':round(float(np.median(rms)),3),'band_level_dbfs':round(float(np.median(level)),1),
-             'receiver_pnr_threshold_db':PNR_MIN,'receiver_gain_is_hardware':False,
+             'receiver_pnr_threshold_db':PNR_MIN,'receiver_concentration_threshold':concentration_min,
+             'receiver_gain_is_hardware':False,
              'code_channel_diagnostics':channel_diagnostics}
     if hits<MIN_CHANNELS:
-        reset(receiver,'beacon_not_detected');return finish('beacon_not_detected',**details)
+        if not track_each_capture:reset(receiver,'beacon_not_detected')
+        return finish('beacon_not_detected',**details)
     details.update(confirm_code(receiver,now))
     normalized=envelope/np.maximum(envelope.max(axis=1,keepdims=True),1e-12)
     center=int(np.mean(normalized[np.array(present)],axis=0).argmax())
@@ -226,14 +236,18 @@ def estimate_highband(receiver,samples,health,now=None):
     while receiver.history and now-receiver.history[0][0]>.75:
         receiver.history.popleft()
     receiver.history.append((now,weighted))
-    # Two bursts for strong code, at most three for weak code. No long accumulator.
-    count=2 if hits>=6 and details['code_pnr_db']>=20 else 3
+    # One capture for both comparison beacons, so a move is not mixed with the
+    # previous place. The 16-18 kHz profile still uses two strong bursts or three weak ones.
+    count=1 if track_each_capture else 2 if hits>=6 and details['code_pnr_db']>=20 else 3
     history=list(receiver.history)[-count:]
     averaged=sum(row[1] for row in history)/len(history)
     valid_pairs=np.flatnonzero(pair_valid)
     details.update(channels=hits,pairs=len(valid_pairs),averaged_bursts=len(history))
     raw,quality,fit=fit_delays(receiver,averaged,valid_pairs)
-    if raw is None and hits>=6 and details['code_pnr_db']>=24 and details['code_concentration']>=.5:
+    # Both comparison beacons reach the arrival fit after six channel matches.
+    # The 16-18 kHz profile still requires a 24 dB peak and concentration of 0.5.
+    arrival_ready=hits>=6 and (track_each_capture or (details['code_pnr_db']>=24 and details['code_concentration']>=.5))
+    if raw is None and arrival_ready:
         from arrival_dsp import fit_arrivals
         if not hasattr(receiver,'geometry_for_arrivals'):
             receiver.geometry_for_arrivals=json.loads(receiver.path.read_text(encoding='utf-8-sig'))

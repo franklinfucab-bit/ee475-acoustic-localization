@@ -1,8 +1,8 @@
 # 手机循环播放器
 
-安装 releases/BeaconLoop-1.0.apk，打开后点 Play 就能循环播放内置的当前定位音。要换音频，点 Choose audio file 选手机里的文件。Pause 暂停，音量用手机媒体音量键调。先保持 Normalize 关闭。
+安装 releases/BeaconLoop-1.1.apk。打开后有两个内置音：19-21 kHz beacon（电脑菜单 20 kHz beacon）和 Gap test 18-22 kHz（电脑菜单 Gap test）。先在两边选同一个，再点 Play。第一次打开仍是 19–21 kHz。Choose audio file 仍可选手机里的其他文件。Pause 暂停，音量用手机媒体音量键调。先保持 Normalize 关闭。
 
-电脑端单独点 Start Scan。内置音对应电脑默认的 coded-20。若改用自己的定位音，电脑 Import Beacon 也要导入匹配文件；能在手机播放不等于一定能定位。精确循环测试优先用 WAV，MP3 自带的静音或编码填充不会被本程序自动删除。
+电脑端单独点 Start Scan。若改用自己的定位音，电脑也要选匹配的 beacon；能在手机播放不等于一定能定位。精确循环测试优先用 WAV，MP3 自带的静音或编码填充不会被本程序自动删除。
 
 Normalize 只是保守地调整整体增益，最多提升 3 dB，并限制峰值。它不改频率，不会校准阵列，也没有保证传播距离更远。建议记录手机位置、音量、文件名和暂停时刻，便于对比。
 
